@@ -66,7 +66,7 @@ void buttonPressed(Button2 &b)
         case 3: //black text with clear background
         {
             i++;
-            display.fillScreen(GxEPD_WHITE); 
+            display.fillScreen(GxEPD_BLACK); 
             display.drawBitmap(0, 0, inverted, 250, 122, 1);
             display.update();
             delay(2000);
@@ -97,58 +97,3 @@ void loop()
 {
     btn.loop();
 }
-
-
-
-
-//code below is alternate version of button press event where it tried to make the 3rd picture stop needing 2 presses to get back to the beginning
-
-
-// void buttonPressed(Button2 &b)
-// {
-//     bool pictureChanged = false;
-
-//     while(pictureChanged = false);
-//     {
-//         pictureChanged = true;
-//         switch (i)
-//         {
-//             case 0:
-//             {
-//                 i++;
-//                 display.fillScreen(GxEPD_BLACK);  
-//                 display.drawBitmap(0, 0, foura, 250, 112, 1);
-//                 display.update();
-//                 delay(2000);
-//                 break;
-//             }
-
-//             case 1:
-//             {
-//                 i++;
-//                 display.fillScreen(GxEPD_BLACK);  
-//                 display.drawBitmap(0, 0, threea, 250, 122, 1);
-//                 display.update();
-//                 delay(2000);
-//                 break;
-//             }
-
-//             case 2:
-//             {
-//                 i++;
-//                 display.fillScreen(GxEPD_BLACK);  
-//                 display.drawBitmap(0, 0, twoa, 125, 61, 1);
-//                 display.update();
-//                 delay(2000);
-//                 break;
-//             }
-
-//             default:
-//             {
-//                 i = 0;
-//                 pictureChanged = false;
-//             }
-//         }
-//     }
-    
-// }

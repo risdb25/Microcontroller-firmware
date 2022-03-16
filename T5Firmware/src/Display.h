@@ -7,15 +7,23 @@
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
 
+//Fonts
+#include <Fonts/FreeMonoBold9pt7b.h>
+#include <Fonts/FreeMonoBold12pt7b.h>
+#include <Fonts/FreeMonoBold18pt7b.h>
+#include <Fonts/FreeMonoBold24pt7b.h>
+
 //Images:
 #include <DandelionLogo.h>
-#include <LossOfWifiIcon.h>
+#include <WiFiConnectedIcon.h>
+#include <WiFiDisconnectedIcon.h>
 
 class Display
 {
 public:
-    Display();
     void setupDisplay();
+    void enterUserInteractionMode();
+    void updateWiFiIcon(bool);
 };
 
 

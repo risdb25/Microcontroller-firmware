@@ -1,11 +1,12 @@
 #pragma once
 #include <mySD.h>
 #include <ArduinoJson.h>
-#include <WifiConnection.h>
+#include <WiFiConnection.h>
 
 class MicroSDCardOperations
 {
 public:
-    String readSDForWiFiCredenials();
-    void storeJson(DynamicJsonDocument&);
+    void storeJsonOnFile(String, const char*);
+    void getUnsentReadings();
+    DynamicJsonDocument getConfigData();
 };

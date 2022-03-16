@@ -2,7 +2,7 @@
 #include <ArduinoJson.h>
 #include <map>
 #include <iterator>
-#include <MicroSDCardOperations.h>
+#include <WiFiConnection.h>
 
 class DataTransformation
 {

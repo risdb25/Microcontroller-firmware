@@ -3,7 +3,7 @@
 MicroSDCardOperations cardOperation;
 extern DynamicJsonDocument configDoc; //global variable declared in main.cpp
 
-String getTime();
+String getTime(); //method declaration is just placed here as it is defined down the bottom of the class -- below methods that call it.
 
 void WiFiConnection::connectToWiFi()
 {
@@ -16,7 +16,7 @@ void WiFiConnection::connectToWiFi()
     const char* password = configDoc["wifiCredentials"][1];
 
     WiFi.begin(ssid, password);
-    delay(8000);
+    delay(8000); //allow time for wifi connection to be established.
     if(WiFi.status() == WL_CONNECTED)
     {
         Display display;
@@ -35,7 +35,6 @@ void WiFiConnection::sendDataToServer(DynamicJsonDocument& doc)
     */
     char jsonString[256]; //used to store converted JSON object in.
     String time = getTime(); //internal method returns time as String.
-    Serial.println(time); //for testing purposes.
     doc["time"] = time; //append time to JSON object.
     
     serializeJson(doc, jsonString); //convert from JSON to character array.
@@ -45,37 +44,35 @@ void WiFiConnection::sendDataToServer(DynamicJsonDocument& doc)
     const char* host = configDoc["serverDetails"][0];
     uint16_t port = configDoc["serverDetails"][1];
     WiFiClient client;
+
     if(WiFi.status() == WL_CONNECTED)
     {
         //call MicroSDCardOperation method to check if unsent file exists, and if so they are sent.
         cardOperation.getUnsentReadings();
 
-        //send data.
-        if(client.connect(host, port))
+        /*The sending of data to the server using WiFiClient class from the Arduino WiFi library MUST
+        * be wrapped inside the if block below. It does not work otherwise.
+        */
+        if(client.connect(host, port)) 
         {
             client.print(jsonString);
             delay(4000);
             client.stop();
         }
-        else
-        {
-            Serial.println("Couldn't connect to server, must store readings in unsent file");
-            return;
-        }
 
-        //call MicroSDCardOperation method to store in READINGS.
+        //call appropriate MicroSDCardOperation method to store in READINGS.
         cardOperation.storeJsonOnFile(jsonString, "readings.txt");
     }
     else
     {
         /*There has been a problem connecting to Wi-Fi. The readings will be stored in the unsent.txt file, so
-        * a call to the MicroSDCardOperation method for storing JSON on file is made, passing in the file name
-        * as an argument.
+        * a call to the appropriate MicroSDCardOperation method for storing JSON on file is made, passing in the file name
+        * as an argument along with the JSON String.
         */
         cardOperation.storeJsonOnFile(jsonString, "unsent.txt");
-        Serial.println("couldn't connect to wifi");
+        Serial.println("couldn't connect to wifi"); //for testing purposes only.
         Display display;
-        display.updateWiFiIcon(false);
+        display.updateWiFiIcon(false); //set wifi connection icon on e-paper display to disconnected.
     }
 
 }
@@ -87,20 +84,17 @@ void WiFiConnection::sendUnsentReadings(DynamicJsonDocument& doc)
     */
 
     char jsonString[256];
-    serializeJsonPretty(doc, jsonString); //Converts JSON to String.
+    serializeJson(doc, jsonString); //Convert from JSON to String.
     
+    const char* host = configDoc["serverDetails"][0];
+    uint16_t port = configDoc["serverDetails"][1];
     WiFiClient client;
-    WiFi.begin("BT-TZAT2F", "ReyrHg7Qqvea4c");
-    delay(8000);
-    if(WiFi.status() == WL_CONNECTED)
+
+    if(client.connect(host, port)) 
     {
-        //send data
-        if(client.connect("192.168.1.96", 21))
-        {
-            client.print(jsonString);
-            delay(4000);
-            client.stop();
-        }
+        client.print(jsonString);
+        delay(4000);
+        client.stop();
     }
     
     //call MicroSDCardOperation method to store in READINGS.

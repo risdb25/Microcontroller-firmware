@@ -11,7 +11,7 @@ int getMedianNum(int bArray[], int iFilterLen);
 
 void TGSMeter::initialise()
 {
-
+  
 }
 
 float TGSMeter::getReadings()

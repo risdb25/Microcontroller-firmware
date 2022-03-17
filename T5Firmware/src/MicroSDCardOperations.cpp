@@ -8,9 +8,9 @@
 
 void MicroSDCardOperations::storeJsonOnFile(String jsonString, const char* fileName)
 {
-    /*This method is called from either the sendDataToServer() or sendUnsentReadings() method in the 
+    /*This method is called from either the sendDataToServer() or sendUnsentReadings() methods in the 
     * WiFiConnecion class. In this method, we take in as a parameter the JSON data as a String, and 
-    * the name of the file for the data to be written to. The String format of the JSON data is then
+    * the name of the file the data is to be written to. The JSON data in its String format is then
     * written to the file.
     */
     delay(500);
@@ -21,7 +21,8 @@ void MicroSDCardOperations::storeJsonOnFile(String jsonString, const char* fileN
     {
         file.println(jsonString);
         file.close();
-        Serial.println("Readings stored successfully");
+        Serial.print("Readings stored successfully in "); //for testing purposes only.
+        Serial.println(fileName); //for testing purposes only.
     }
     else
     {
@@ -32,13 +33,14 @@ void MicroSDCardOperations::storeJsonOnFile(String jsonString, const char* fileN
 
 void MicroSDCardOperations::getUnsentReadings()
 {
-    /*This method is called from the WifiConnection class before the latest readings are attempted to be sent to the database.
-    * The method checks if the unsent.txt file has been created, and if so, reads in all the data from it. When the Json strings are read in
-    * from the file, they are each deserialised into to a DynamicJsonDocument and then sent to the appropriate method in the WifiConnection class. The reason
-    * they are formatted back to being Json again is to ensure the integrity. If just sending the String straight from file, the closing curly brace is missing due to the
-    * way in which each individual Json object is read in. At the end of the method, after all the unsent readings have been sent, the file can be deleted.
+    /*This method is called from the WifiConnection class before the latest readings are attempted to be sent to the server.
+    * The method checks if the unsent.txt file exists, and if so, reads in all the data from it. Each JSON string is read in
+    * from the file, deserialised back into to a DynamicJsonDocument, and then sent to the appropriate method in the WifiConnection class so it can be sent. 
+    * The reason they are formatted back to a true JSON object again is to ensure the integrity. 
+    * If just sending the String straight from file, the closing curly brace is missing due to the way in which each individual
+    * Json string is read in. At the end of the method, after all the unsent readings have been dealt with, the file is deleted since 
+    * there are no more unsent readings that require to be sent.
     */
-
     delay(500);
     SD.begin(SDCARD_CS, SDCARD_MOSI, SDCARD_MISO, SDCARD_CLK);
     int i = 0;
@@ -50,13 +52,13 @@ void MicroSDCardOperations::getUnsentReadings()
         WiFiConnection wiFiOperation;
 
         while(file.available())
-            {
-                readings = file.readStringUntil('}'); //when the end of a JSON string is reached
-                deserializeJson(doc, readings); //convert String to JSON
-                wiFiOperation.sendUnsentReadings(doc); //send it to the database
-                Serial.printf("Number of unsent readings passed = %d\n", ++i);
-                delay(2000);
-            }
+        {
+            readings = file.readStringUntil('}'); //when the end of a JSON string is reached
+            deserializeJson(doc, readings); //convert String to JSON
+            wiFiOperation.sendUnsentReadings(doc); //send it to the database
+            Serial.printf("Number of unsent readings passed = %d\n", ++i);
+            delay(2000);
+        }
 
         file.close();
         SD.remove("unsent.txt");

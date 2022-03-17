@@ -5,10 +5,10 @@
 #include <TGSMeter.h>
 #include <PHSensor.h>
 
-/*In this class, readings are taken from each sensor, with the values returned stored in a map.
-* The key-value pair in the map is String-float where string is the name of the type of measurement being recorded and 
+/*In this class, readings are taken from each sensor, with the values returned stored in a map. The data types of the
+* key-value pair in the map is String-float where String is the name of the type of measurement being recorded and 
 * float is the measurement value itself. When all readings have been taken, the map is sent as an argument to the 
-* DataTransformation class.
+* appropriate method in the DataTransformation class.
 */
 
 //Derived sensor sub-class instances
@@ -36,9 +36,8 @@ void SensorModule::initialiseSet1()
 {
     luminositySensor.initialise();
     multiPurposeSensor.initialise();
-    // //initialise water level sensor
-    // tgsMeter.initialise();
-
+    // tgsMeter.initialise(); sensor not currently connected.
+    // initialise water level sensor
 }
 
 void SensorModule::initialiseSet2()
@@ -66,7 +65,7 @@ void SensorModule::getReadingsSet1()
     delay(500);
     readings["humidity"] = multiPurposeSensor.getReadings(3);
 
-    // tgsMeter.getReadings();
+    // readings["electrical conductivity"] = tgsMeter.getReadings();
 
     //get water level sensor readings
 
@@ -75,16 +74,28 @@ void SensorModule::getReadingsSet1()
 void SensorModule::getReadingsSet2()
 {
     readings["substrate temp"] = substrateTemperatureSensor.getReadings();
-    sendReadings(); //TESTING PURPOSES ONLY - REMOVE!!!!!
+    sendReadings(); //DELETE, FOR TESTING PURPOSES ONLY WHILE getReadingsSet3() IS NOT BEING CALLED.
 }
 
-void getReadingsSet3()
+/*Note: This method is not currently being called as the select(LEVEL_1_SELECT, SET_3_SELECT) in the SensorSelection class
+* is currently commented out.
+*/
+void SensorModule::getReadingsSet3()
 {
     readings["pH"] = pHSensor.getReadings();
-    sendReadings(); //could be changed to instead be called from SensorSelection.cpp
+    sendReadings(); //DELETE, FOR TESTING PURPOSES ONLY WHILE getReadingsSet3() IS NOT BEING CALLED.
 }
 
 void sendReadings()
 {
+    /*Please read Future work document in the Node/Documentation folder of the GitHub repository for further 
+    * information on the changes required before this method can be called when the hardware allows for readings
+    * to be taken from multiple Levels at one time.
+
+    /*Currently, this method is called after the Set 3 sensor's readings has been taken. This works for when readings are only
+    * being taken from one Level, but when the hardware allows for testing to be conducted of taking readings from all Levels 
+    * and Sets, then the getReadingsSet1, 2 and 3 methods will need adapted to allow for knowledge of what Level is calling 
+    * the method.
+    */
     dataTransformation.serialise(readings);
 }

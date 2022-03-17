@@ -27,7 +27,7 @@ void Display::enterUserInteractionMode()
     display.setCursor(50, 50);
     display.println("User Interaction Mode entered");
     display.update();
-    delay(8000);
+    delay(8000); //allow time for user to make more button presses while in UI mode.
 }
 
 void Display::updateWiFiIcon(bool connected)

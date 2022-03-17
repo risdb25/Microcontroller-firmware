@@ -22,10 +22,10 @@ SensorModule m_sensor;
 
 void SensorSelection::setAndLevelSelection()
 {
-  /*In this method, we go through each of the levels and sensor sets within the Grow Cube. When a 
+  /*In this method, we will go through each of the Levels and sensor Sets within the Grow Cube. When a 
   * level is selected, we call the initialise() method to first turn off power to every level and set,
-  * and then turn on power to the appropriate level and set that has called been called. After the last
-  * level and set have had their readings taken, the SensorModule class handles the rest of the process from here.
+  * and then turn on power to only the level and set that has been selected. After the last
+  * level and set have had their readings taken, the SensorModule class handles the rest of the process from this point.
   */
   pinMode(BUTTONPIN, INPUT_PULLDOWN);
   pinMode(LEVEL_1_SELECT, OUTPUT);

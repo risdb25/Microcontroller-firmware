@@ -8,18 +8,19 @@
 /*Libraries included via project 'lib' folder:
 * GxEPD
 * esp32-micro-sdcard
+* DFRobot_PH
 */
 
 //Sleep variables
 #define uS_TO_S_FACTOR 1000000 // Conversion factor for micro seconds to seconds
-#define TIME_TO_SLEEP 5        // Time ESP32 will go to sleep (in seconds)
+#define TIME_TO_SLEEP 15        // Time ESP32 will go to sleep (in seconds)
 
 //Global JSON document which stores the configuration info as stored on the MicroSD card.
 DynamicJsonDocument configDoc(256);
 
 void setup() 
 {
-  //Instance variables of custom classes which provide methods required to be called from main.cpp.
+  //Instance variables of custom classes that provide methods required to be called from main.cpp.
   SensorModule sensorModule;
   SensorSelection sensorSelection;
   MicroSDCardOperations microSDCardOperations;
@@ -29,24 +30,27 @@ void setup()
 
   Serial.begin(115200);
   delay(500);
+
+  //sets the interrupt to the T5's Reset button.
   eventDrivenButtonPress.initialise();
   delay(500);
 
-  //displays home page showing Dandelion logo & wifi connection status.
+  //display home page showing Dandelion logo & wifi connection status, which is currently disconnected.
   display.setupDisplay();
 
-  //read in config data from MicroSD card
+  //read in configuration data stored in the config file on MicroSD card.
   configDoc = microSDCardOperations.getConfigData();
 
-  //connect to wifi
+  //connect to wifi.
   wiFiConnection.connectToWiFi();
 
+  //commence the reading-taking process.
   sensorSelection.setAndLevelSelection();
 
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
   esp_deep_sleep_start();
 }
 
-void loop() 
+void loop()
 {}
 

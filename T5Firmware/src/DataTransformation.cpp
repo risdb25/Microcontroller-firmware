@@ -16,6 +16,10 @@ void DataTransformation::serialise(std::map <String, float> p_readings)
 
     for (itr = p_readings.begin(); itr != p_readings.end(); ++itr)
     {
+        /*When adding the readings to the doc, as opposed to setting the value directly as itr->second, it is wrapped in a
+        * call to the ArduinoJson serialized() method, as this provides a way for the reading to be set to the required 3 
+        * decimal places. This is what the '3' argument in the method call relates to.
+        */
         doc[itr->first] = serialized(String(itr->second, 3));
     }
 
